@@ -1,0 +1,16 @@
+{
+    "prompts": [
+        {
+            "prompt": "A cat stretching on the floor, highly detailed, ultra sharp, cinematic, 100mm lens, 8k resolution.",
+            "output_file": "prompt_1.png"
+        },
+        {
+            "prompt": "A dog playing with a ball in a sunny park, vibrant colors, high contrast, 50mm lens, 4k resolution.",
+            "output_file": "prompt_2.png"
+        },
+        {
+            "prompt": "A serene mountain landscape at sunrise, soft lighting, wide angle, 16:9 aspect ratio, 6k resolution.",
+            "output_file": "prompt_3.png"
+        }
+    ]
+}
