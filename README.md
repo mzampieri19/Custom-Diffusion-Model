@@ -151,7 +151,7 @@ Generate stunning images from simple text descriptions:
 
 **Prompt 4:** "Abstract geometric patterns in vibrant blues and oranges, modern art style, high contrast"
 
-![Abstract art](./examples/abstract_art.png)
+![Abstract art](images/prompt_4.png)
 
 ### Image-to-Image Examples
 
