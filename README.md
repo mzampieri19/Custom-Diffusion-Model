@@ -134,8 +134,33 @@ Starting files need to be downloaded, and placed in a data folder, from this [li
 ## 🎨 Example Results
 
 Generate stunning images from simple text descriptions:
-- "A cat stretching on the floor, highly detailed, ultra sharp, cinematic, 100mm lens, 8k resolution." → [prompt_1.png]
-- "A dog playing with a ball in a sunny park, vibrant colors, high contrast, 50mm lens, 4k resolution." → [prompt_2.png]
+
+### Text-to-Image Examples
+
+**Prompt 1:** "A cat stretching on the floor, highly detailed, ultra sharp, cinematic, 100mm lens, 8k resolution."
+
+![Generated cat image](images/prompt_1.png)
+
+**Prompt 2:** "A dog playing with a ball in a sunny park, vibrant colors, high contrast, 50mm lens, 4k resolution."
+
+![Generated dog image](images/prompt_2.png)
+
+**Prompt 3:** "A serene mountain landscape at sunrise, soft lighting, wide angle, 16:9 aspect ratio, 6k resolution."
+
+![Mountain landscape](images/prompt_3.png)
+
+**Prompt 4:** "Abstract geometric patterns in vibrant blues and oranges, modern art style, high contrast"
+
+![Abstract art](./examples/abstract_art.png)
+
+### Image-to-Image Examples
+
+Starting with an input image and modifying it with text prompts:
+
+| Input Image | Prompt | Output Image |
+|-------------|--------|--------------|
+| ![Input](./examples/input_image.png) | "Same scene but at sunset with warm colors" | ![Output](./examples/output_sunset.png) |
+| ![Input](./examples/input_portrait.png) | "Portrait in the style of Van Gogh" | ![Output](./examples/output_vangogh.png) |
 
 ## 🔍 Technical Details
 

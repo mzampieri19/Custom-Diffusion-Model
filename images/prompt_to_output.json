@@ -11,6 +11,15 @@
         {
             "prompt": "A serene mountain landscape at sunrise, soft lighting, wide angle, 16:9 aspect ratio, 6k resolution.",
             "output_file": "prompt_3.png"
+        },
+        {
+            "prompt": "Abstract geometric patterns in vibrant blues and oranges, modern art style, high contrast",
+            "output_file": "prompt_4.png"
+        },
+        {
+            "input_image": "input_image_1.png",
+            "prompt": "A futuristic city skyline at night, neon lights, cyberpunk style, high detail, 35mm lens, 8k resolution.",
+            "output_file": "prompt_5.png"
         }
     ]
 }

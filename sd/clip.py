@@ -93,7 +93,7 @@ class CLIPLayer(nn.Module):
         # Apply layer normalization before attention
         x = self.layernorm_1(x)
         # Apply multi-head self-attention with causal mask
-        x = self.attention(x, casual_mask=True)
+        x = self.attention(x, causal_mask=True)
         # Add residual connection after attention
         x += residue
         # Save for next residual connection
@@ -144,7 +144,7 @@ class CLIP(nn.Module):
             CLIPLayer(12, 768) for i in range (12)
         ])
         # Final layer normalization
-        self.layersnorm = nn.LayerNorm(768)
+        self.layernorm = nn.LayerNorm(768)
 
     def forward(self, tokens: torch.LongTensor) -> torch.FloatTensor:
         # Ensure input is of type long (token indices)
@@ -155,5 +155,5 @@ class CLIP(nn.Module):
         for layer in self.layers:
             state = layer(state)
         # Apply final layer normalization
-        output = self.layersnorm(state)
+        output = self.layernorm(state)
         return output
