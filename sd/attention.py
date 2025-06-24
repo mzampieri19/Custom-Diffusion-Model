@@ -68,10 +68,12 @@ class SelfAttention(nn.Module):
 
         # Compute attention weights
         weight = q @ k.transpose(-1, -2)  # (batch, n_heads, seq_len, seq_len)
+        
         if causal_mask:
             # Apply causal mask to prevent attending to future positions
             mask = torch.ones_like(weight, dtype=torch.bool).triu(1) 
             weight.masked_fill_(mask, -torch.inf) 
+            
         weight /= math.sqrt(self.d_head)  # Scale by sqrt(d_head)
         weight = F.softmax(weight, dim=-1)  # Softmax over keys
 

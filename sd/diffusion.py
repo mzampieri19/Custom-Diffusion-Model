@@ -78,6 +78,7 @@ class UNET_ResidualBlock(nn.Module):
         self.linear_time = nn.Linear(n_time, out_channels)  # Project time embedding to feature channels
         self.groupnorm_merged = nn.GroupNorm(32, out_channels)  # Normalize merged features
         self.conv_merged = nn.Conv2d(out_channels, out_channels, kernel_size=3, padding=1)  # Merge conv
+
         if in_channels == out_channels:
             self.residual_layer = nn.Identity()  # Use identity if channels match
         else:
@@ -88,8 +89,10 @@ class UNET_ResidualBlock(nn.Module):
         feature = self.groupnorm_feature(feature)  # Normalize
         feature = F.silu(feature)  # Activation
         feature = self.conv_feature(feature)  # Convolution
+
         time = F.silu(time)  # Activate time embedding
         time = self.linear_time(time)  # Project time embedding
+
         merged = feature + time.unsqueeze(-1).unsqueeze(-1)  # Add time embedding (broadcast)
         merged = self.groupnorm_merged(merged)  # Normalize merged
         merged = F.silu(merged)  # Activation
@@ -137,13 +140,17 @@ class UNET_AttentionBlock(nn.Module):
         channels = n_head * n_embd
         self.groupnorm = nn.GroupNorm(32, channels, eps=1e-6)  # Normalize input
         self.conv_input = nn.Conv2d(channels, channels, kernel_size=1, padding=0)  # 1x1 conv
+        
         self.layernorm_1 = nn.LayerNorm(channels)  # LayerNorm before self-attention
         self.attention_1 = SelfAttention(n_head, channels, in_proj_bias=False)  # Self-attention
+        
         self.layernorm_2 = nn.LayerNorm(channels)  # LayerNorm before cross-attention
         self.attention_2 = CrossAttention(n_head, channels, d_context, in_proj_bias=False)  # Cross-attention
         self.layernorm_3 = nn.LayerNorm(channels)  # LayerNorm before feed-forward
+        
         self.linear_geglu_1  = nn.Linear(channels, 4 * channels * 2)  # GEGLU: value and gate
         self.linear_geglu_2 = nn.Linear(4 * channels, channels)  # GEGLU output projection
+        
         self.conv_output = nn.Conv2d(channels, channels, kernel_size=1, padding=0)  # 1x1 conv for output
     
     def forward(self, x, context):
@@ -270,12 +277,15 @@ class UNET(nn.Module):
             SwitchSequential(nn.Conv2d(4, 320, kernel_size=3, padding=1)),  # Initial conv
             SwitchSequential(UNET_ResidualBlock(320, 320), UNET_AttentionBlock(8, 40)),  # Residual + attention
             SwitchSequential(UNET_ResidualBlock(320, 320), UNET_AttentionBlock(8, 40)),
+            
             SwitchSequential(nn.Conv2d(320, 320, kernel_size=3, stride=2, padding=1)),  # Downsample
             SwitchSequential(UNET_ResidualBlock(320, 640), UNET_AttentionBlock(8, 80)),
             SwitchSequential(UNET_ResidualBlock(640, 640), UNET_AttentionBlock(8, 80)),
+            
             SwitchSequential(nn.Conv2d(640, 640, kernel_size=3, stride=2, padding=1)),  # Downsample
             SwitchSequential(UNET_ResidualBlock(640, 1280), UNET_AttentionBlock(8, 160)),
             SwitchSequential(UNET_ResidualBlock(1280, 1280), UNET_AttentionBlock(8, 160)),
+            
             SwitchSequential(nn.Conv2d(1280, 1280, kernel_size=3, stride=2, padding=1)),  # Downsample
             SwitchSequential(UNET_ResidualBlock(1280, 1280)),
             SwitchSequential(UNET_ResidualBlock(1280, 1280)),
@@ -291,12 +301,15 @@ class UNET(nn.Module):
             SwitchSequential(UNET_ResidualBlock(2560, 1280)),
             SwitchSequential(UNET_ResidualBlock(2560, 1280)),
             SwitchSequential(UNET_ResidualBlock(2560, 1280), Upsample(1280)),
+
             SwitchSequential(UNET_ResidualBlock(2560, 1280), UNET_AttentionBlock(8, 160)),
             SwitchSequential(UNET_ResidualBlock(2560, 1280), UNET_AttentionBlock(8, 160)),
             SwitchSequential(UNET_ResidualBlock(1920, 1280), UNET_AttentionBlock(8, 160), Upsample(1280)),
+
             SwitchSequential(UNET_ResidualBlock(1920, 640), UNET_AttentionBlock(8, 80)),
             SwitchSequential(UNET_ResidualBlock(1280, 640), UNET_AttentionBlock(8, 80)),
             SwitchSequential(UNET_ResidualBlock(960, 640), UNET_AttentionBlock(8, 80), Upsample(640)),
+            
             SwitchSequential(UNET_ResidualBlock(960, 320), UNET_AttentionBlock(8, 40)),
             SwitchSequential(UNET_ResidualBlock(640, 320), UNET_AttentionBlock(8, 40)),
             SwitchSequential(UNET_ResidualBlock(640, 320), UNET_AttentionBlock(8, 40)),

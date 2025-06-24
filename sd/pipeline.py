@@ -40,6 +40,7 @@ def generate(
 
         # Set up random generator for reproducibility
         generator = torch.Generator(device=device)
+        
         if seed is None:
             generator.seed()
         else:

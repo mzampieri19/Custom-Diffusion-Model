@@ -36,8 +36,6 @@ class CLIPEmbedding(nn.Module):
         self.token_embedding = nn.Embedding(n_vocab, n_embed)
         # Learnable positional embeddings for each position in the sequence
         self.position_embedding = nn.Parameter(torch.zeros(n_tokens, n_embed))
-        # Layer normalization for the embeddings
-        self.layernorm = nn.LayerNorm(n_embed)
 
     def forward(self, tokens):
         # Convert token indices to embeddings
@@ -106,6 +104,8 @@ class CLIPLayer(nn.Module):
         x = self.linear_1(x)
         # Gated Linear Unit (GLU)-like activation
         x = x * torch.sigmoid(1.702 * x)
+        # Second linear layer in feed-forward network
+        x = self.linear_2(x)
         # Add residual connection after feed-forward
         x += residue
         return x 
@@ -146,9 +146,9 @@ class CLIP(nn.Module):
         # Final layer normalization
         self.layersnorm = nn.LayerNorm(768)
 
-    def forward(self, x: torch.LongTensor) -> torch.FloatTensor:
+    def forward(self, tokens: torch.LongTensor) -> torch.FloatTensor:
         # Ensure input is of type long (token indices)
-        tokens = x.type(torch.long)
+        tokens = tokens.type(torch.long)
         # Get token and position embeddings
         state = self.embedding(tokens)
         # Pass through each transformer encoder layer

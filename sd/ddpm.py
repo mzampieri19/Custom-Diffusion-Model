@@ -76,9 +76,11 @@ class DDPMSampler:
         Compute the variance for the current timestep, used for noise sampling.
         """
         prev_t = self._get_previous_timestep(timestep)
+
         alpha_prod_t = self.alphas_cumprod[timestep]
         alpha_prod_t_prev = self.alphas_cumprod[prev_t] if prev_t >= 0 else self.one
         current_beta_t = 1 - alpha_prod_t / alpha_prod_t_prev
+
         variance = (1 - alpha_prod_t_prev) / (1 - alpha_prod_t) * current_beta_t
         variance = torch.clamp(variance, min=1e-20)
         return variance
@@ -104,12 +106,16 @@ class DDPMSampler:
         """
         t = timestep
         prev_t = self._get_previous_timestep(t)
+
         alpha_prod_t = self.alphas_cumprod[t]
         alpha_prod_t_prev = self.alphas_cumprod[prev_t] if prev_t >= 0 else self.one
+
         beta_prod_t = 1 - alpha_prod_t
         beta_prod_t_prev = 1 - alpha_prod_t_prev
+
         current_alpha_t = alpha_prod_t / alpha_prod_t_prev
         current_beta_t = 1 - current_alpha_t
+
         # Estimate the original (denoised) sample
         pred_original_sample = (latents - beta_prod_t ** (0.5) * model_output) / alpha_prod_t ** (0.5)
         # Coefficients for combining the original and current samples
@@ -117,12 +123,14 @@ class DDPMSampler:
         current_sample_coeff = current_alpha_t ** (0.5) * beta_prod_t_prev / beta_prod_t
         # Predict the previous sample
         pred_prev_sample = pred_original_sample_coeff * pred_original_sample + current_sample_coeff * latents
+        
         variance = 0
         # Add noise except for the last step
         if t > 0:
             device = model_output.device
             noise = torch.randn(model_output.shape, generator=self.generator, device=device, dtype=model_output.dtype)
             variance = (self._get_variance(t) ** 0.5) * noise
+
         pred_prev_sample = pred_prev_sample + variance
         return pred_prev_sample
     
@@ -142,14 +150,19 @@ class DDPMSampler:
         """
         alphas_cumprod = self.alphas_cumprod.to(device=original_samples.device, dtype=original_samples.dtype)
         timesteps = timesteps.to(original_samples.device)
+
         sqrt_alpha_prod = alphas_cumprod[timesteps] ** 0.5
         sqrt_alpha_prod = sqrt_alpha_prod.flatten()
+
         while len(sqrt_alpha_prod.shape) < len(original_samples.shape):
             sqrt_alpha_prod = sqrt_alpha_prod.unsqueeze(-1)
+
         sqrt_one_minus_alpha_prod = (1 - alphas_cumprod[timesteps]) ** 0.5
         sqrt_one_minus_alpha_prod = sqrt_one_minus_alpha_prod.flatten()
+
         while len(sqrt_one_minus_alpha_prod.shape) < len(original_samples.shape):
             sqrt_one_minus_alpha_prod = sqrt_one_minus_alpha_prod.unsqueeze(-1)
+            
         noise = torch.randn(original_samples.shape, generator=self.generator, device=original_samples.device, dtype=original_samples.dtype)
         noisy_samples = sqrt_alpha_prod * original_samples + sqrt_one_minus_alpha_prod * noise
         return noisy_samples

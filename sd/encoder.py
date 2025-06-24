@@ -46,17 +46,21 @@ class VAE_Encoder(nn.Sequential):
             VAE_ResidualBlock(128, 128),                  # Residual block: 128 -> 128 channels
             VAE_ResidualBlock(128, 128),                  # Residual block: 128 -> 128 channels
             nn.Conv2d(128, 128, kernel_size=3, stride=2, padding=0),  # Downsample: halve spatial size, keep 128 channels
+            
             VAE_ResidualBlock(128, 256),                  # Residual block: 128 -> 256 channels
             VAE_ResidualBlock(256, 256),                  # Residual block: 256 -> 256 channels
             nn.Conv2d(256, 256, kernel_size=3, stride=2, padding=0),  # Downsample: halve spatial size, keep 256 channels
+            
             VAE_ResidualBlock(256, 512),                  # Residual block: 256 -> 512 channels
             VAE_ResidualBlock(512, 512),                  # Residual block: 512 -> 512 channels
             nn.Conv2d(512, 512, kernel_size=3, stride=2, padding=0),  # Downsample: halve spatial size, keep 512 channels
+            
             VAE_ResidualBlock(512, 512),                  # Residual block: 512 -> 512 channels
             VAE_ResidualBlock(512, 512),                  # Residual block: 512 -> 512 channels
             VAE_ResidualBlock(512, 512),                  # Residual block: 512 -> 512 channels
             VAE_AttentionBlock(512),                      # Attention block: capture global dependencies
             VAE_ResidualBlock(512, 512),                  # Residual block: 512 -> 512 channels
+            
             nn.GroupNorm(32, 512),                        # Group normalization: 32 groups, 512 channels
             nn.SiLU(),                                    # SiLU activation function
             nn.Conv2d(512, 8, kernel_size=3, padding=1),  # Reduce channels from 512 to 8
