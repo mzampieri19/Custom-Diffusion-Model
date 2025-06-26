@@ -17,8 +17,8 @@
             "output_file": "prompt_4.png"
         },
         {
-            "input_image": "input_image_1.png",
-            "prompt": "A futuristic city skyline at night, neon lights, cyberpunk style, high detail, 35mm lens, 8k resolution.",
+            "input_image": "cat_input_image.png",
+            "prompt": "Same cat from the image, now wearing a space suit",
             "output_file": "prompt_5.png"
         }
     ]

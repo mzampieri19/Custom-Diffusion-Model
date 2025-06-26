@@ -151,7 +151,7 @@ Generate stunning images from simple text descriptions:
 
 **Prompt 4:** "Abstract geometric patterns in vibrant blues and oranges, modern art style, high contrast"
 
-![Abstract art](./examples/abstract_art.png)
+![Abstract art](images/prompt_4.png)
 
 ### Image-to-Image Examples
 
@@ -159,8 +159,7 @@ Starting with an input image and modifying it with text prompts:
 
 | Input Image | Prompt | Output Image |
 |-------------|--------|--------------|
-| ![Input](./examples/input_image.png) | "Same scene but at sunset with warm colors" | ![Output](./examples/output_sunset.png) |
-| ![Input](./examples/input_portrait.png) | "Portrait in the style of Van Gogh" | ![Output](./examples/output_vangogh.png) |
+| ![Input](images/cat_input_image.jpg) | "Same cat from the image, now wearing a space suit" | ![Output](images/prompt_5.png) |
 
 ## 🔍 Technical Details
 
